@@ -92,7 +92,7 @@ typedef struct _Input
         [self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] stringForKey:@"homepage"]]]];
     }
     else {
-        [self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString: @"http://www.google.com"]]];
+        [self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString: @"https://www.google.com"]]];
     }
 }
 -(void)viewDidLoad {
@@ -120,7 +120,7 @@ typedef struct _Input
     [self.view addGestureRecognizer:longPress];
     
     self.webview = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    //[self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.google.com"]]];
+    //[self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.google.com"]]];
     
     [self.view addSubview:self.webview];
     [self.view addSubview:cursorView];
