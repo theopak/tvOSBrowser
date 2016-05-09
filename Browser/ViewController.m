@@ -148,8 +148,16 @@ typedef struct _Input
                                               alertControllerWithTitle:@"Menu"
                                               message:@""
                                               preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *reloadAction = [UIAlertAction
+                                       actionWithTitle:@"Reload Page"
+                                       style:UIAlertActionStyleDefault
+                                       handler:^(UIAlertAction *action)
+                                       {
+                                           previousURL = @"";
+                                           [self.webview reload];
+                                       }];
         UIAlertAction *loadHomePageAction = [UIAlertAction
-                                             actionWithTitle:@"Go To Home Page"
+                                             actionWithTitle:@"Home"
                                              style:UIAlertActionStyleDefault
                                              handler:^(UIAlertAction *action)
                                              {
@@ -433,6 +441,11 @@ typedef struct _Input
          */
         [alertController addAction:viewFavoritesAction];
         [alertController addAction:viewHistoryAction];
+        if (_webview.request != nil) {
+            if (![_webview.request.URL.absoluteString  isEqual: @""]) {
+                [alertController addAction:reloadAction];
+            }
+        }
         [alertController addAction:loadHomePageAction];
         [alertController addAction:setHomePageAction];
         
@@ -456,9 +469,11 @@ typedef struct _Input
 }
 -(void)requestURLorSearchInput
 {
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    NSString *version = [info objectForKey:@"CFBundleShortVersionString"];
     UIAlertController *alertController = [UIAlertController
-                                          alertControllerWithTitle:@"Enter URL or Search Terms"
-                                          message:@""
+                                          alertControllerWithTitle:[NSString stringWithFormat:@"github.com/jvanakker/tvOSBrowser %@", version]
+                                          message:@"Double press the touch area to switch between cursor & scroll mode.\nPress the Menu button to navigate back.\nPress the Play/Pause button for a URL bar.\nDouble tap the Play/Pause button or Menu button for more options."
                                           preferredStyle:UIAlertControllerStyleAlert];
     
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField)
@@ -533,15 +548,6 @@ typedef struct _Input
                                        }
                                    }];
     
-    UIAlertAction *reloadAction = [UIAlertAction
-                                   actionWithTitle:@"Reload Page"
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction *action)
-                                   {
-                                       previousURL = @"";
-                                       [self.webview reload];
-                                   }];
-    
     UIAlertAction *cancelAction = [UIAlertAction
                                    actionWithTitle:@"Cancel"
                                    style:UIAlertActionStyleCancel
@@ -552,7 +558,6 @@ typedef struct _Input
     [alertController addAction:goAction];
     if (_webview.request != nil) {
         if (![_webview.request.URL.absoluteString  isEqual: @""]) {
-            [alertController addAction:reloadAction];
             [alertController addAction:cancelAction];
         }
     }
@@ -561,7 +566,7 @@ typedef struct _Input
         UITextField *loginTextField = alertController.textFields[0];
         [loginTextField becomeFirstResponder];
     }
-    else if ([_webview.request.URL.absoluteString  isEqual: @""]) {
+    else if ([_webview.request.URL.absoluteString isEqual: @""]) {
         UITextField *loginTextField = alertController.textFields[0];
         [loginTextField becomeFirstResponder];
     }
