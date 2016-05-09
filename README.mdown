@@ -2,21 +2,27 @@ tvOS Browser
 =============
 
 Web browser for tvOS using private API (aka UIWebView).
-You'll need to redefine the following in Availability.h to build successfully.
-```
-Availability.h for the AppleTV is located in Xcode>Contents>Developer>Platforms>AppleTVOS.platform>Developer>SDKs>AppleTVOS.sdk>usr>include
-Availability.h for the AppleTV Simulator is located in Xcode>Contents>Developer>Platforms>AppleTVSimulator.platform>Developer>SDKs>AppleTVSimulator.sdk>usr>include
-```
+
+To build successfully, you'll need to change 2 lines in Availability.h starting around line 280:
+
+- Availability.h for the AppleTV: `/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h`
+- Availability.h for the AppleTV Simulator: `/Applications/Xcode.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator.sdk/usr/include/Availability.h`
 Change:
+
+```diff
+/* for use marking APIs available info for tvOS */
+#if defined(__has_feature)
+  #if __has_feature(attribute_availability_tvos)
+-   #define __TVOS_UNAVAILABLE                    __OS_AVAILABILITY(tvos,unavailable)
+-   #define __TVOS_PROHIBITED                     __OS_AVAILABILITY(tvos,unavailable)
++   #define __TVOS_UNAVAILABLE_NOTQUITE           __OS_AVAILABILITY(tvos,unavailable) /* changed for https://github.com/jvanakker/tvOSBrowser */
++   #define __TVOS_PROHIBITED_NOTQUITE            __OS_AVAILABILITY(tvos,unavailable) /* changed for https://github.com/jvanakker/tvOSBrowser */
+    #define __TVOS_AVAILABLE(_vers)               __OS_AVAILABILITY(tvos,introduced=_vers)
+    #define __TVOS_DEPRECATED(_start, _dep, _msg) __TVOS_AVAILABLE(_start) __OS_AVAILABILITY_MSG(tvos,deprecated=_dep,_msg)
+  #endif
+#endif
 ```
-#define __TVOS_UNAVAILABLE                    __OS_AVAILABILITY(tvos,unavailable)
-#define __TVOS_PROHIBITED                     __OS_AVAILABILITY(tvos,unavailable)
-```
-To:
-```
-#define __TVOS_UNAVAILABLE_NOTQUITE                    __OS_AVAILABILITY(tvos,unavailable)
-#define __TVOS_PROHIBITED_NOTQUITE                     __OS_AVAILABILITY(tvos,unavailable)
-```
+
 Do this for Availability.h for both simulator and device if you want to run it on the real hardware.
 
 How to Use tvOSBrowser
