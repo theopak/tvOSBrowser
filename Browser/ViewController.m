@@ -554,8 +554,8 @@ typedef struct _Input
                                    handler:^(UIAlertAction *action)
                                    {
                                    }];
-    [alertController addAction:searchAction];
     [alertController addAction:goAction];
+    [alertController addAction:searchAction];
     if (_webview.request != nil) {
         if (![_webview.request.URL.absoluteString  isEqual: @""]) {
             [alertController addAction:cancelAction];
@@ -670,6 +670,12 @@ typedef struct _Input
                                           message:@"Double press the touch area to switch between cursor & scroll mode.\nPress the touch area while in cursor mode to click.\nPress the Menu button to navigate back.\nPress the Play/Pause button for a URL bar.\nDouble tap the Play/Pause button or Menu button for more options."
                                           preferredStyle:UIAlertControllerStyleAlert];
     
+    UIAlertAction *cancelAction = [UIAlertAction
+                                   actionWithTitle:@"Dismiss"
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction *action)
+                                   {
+                                   }];
     UIAlertAction *hideForeverAction = [UIAlertAction
                                         actionWithTitle:@"Don't Show This Again"
                                         style:UIAlertActionStyleDestructive
@@ -686,19 +692,13 @@ typedef struct _Input
                                             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DontShowHintsOnLaunch"];
                                             [[NSUserDefaults standardUserDefaults] synchronize];
                                         }];
-    UIAlertAction *cancelAction = [UIAlertAction
-                                   actionWithTitle:@"Dismiss"
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction *action)
-                                   {
-                                   }];
+    [alertController addAction:cancelAction];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DontShowHintsOnLaunch"]) {
         [alertController addAction:showForeverAction];
     }
     else {
         [alertController addAction:hideForeverAction];
     }
-    [alertController addAction:cancelAction];
     [self presentViewController:alertController animated:YES completion:nil];
     
     
